@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const volunteerSchema = new Schema({
@@ -6,9 +6,9 @@ const volunteerSchema = new Schema({
   email: { type: String, required: true },
   password: { type: String, required: true },
   location: { type: String, required: true },
-  distanceToTravel: { type: Number, required: true },
+  distanceToTravel: { type: Number, required: true, default: 5 },
   profilePhoto: { type: String, required: false },
-  shoppingListId: [{ type: Schema.Types.ObjectId, ref: "ShoppingList" }],
+  shoppingListId: [{ type: Schema.Types.ObjectId, ref: 'ShoppingList' }],
 });
 
-module.exports = mongoose.model("Volunteer", volunteerSchema);
+module.exports = mongoose.model('Volunteer', volunteerSchema);
