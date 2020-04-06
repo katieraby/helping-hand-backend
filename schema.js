@@ -1,15 +1,16 @@
-const { buildSchema } = require("graphql");
+const { buildSchema } = require('graphql');
 
-const schema = buildSchema(gql`
+// ShoppingListId: [ShoppingList!]
+
+const schema = buildSchema(`
   type Volunteer {
     _id: ID!
     name: String!
     email: String!
     password: String!
     location: String!
-    distanceToTravel: Number!
+    distanceToTravel: Int!
     profilePhoto: String!
-    ShoppingListId: [ShoppingList!]
   }
 
   input VolunteerInput {
@@ -17,16 +18,21 @@ const schema = buildSchema(gql`
     email: String!
     password: String!
     location: String!
-    distanceToTravel: Number!
+    distanceToTravel: Int!
     profilePhoto: String!
   }
 
   type RootQuery {
-
+    volunteers: [Volunteer!]
   }
 
   type RootMutation {
       createVolunteer(volunteerInput: VolunteerInput): Volunteer
+  }
+
+  schema {
+    query: RootQuery
+    mutation: RootMutation
   }
 `);
 

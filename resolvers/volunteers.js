@@ -1,4 +1,4 @@
-const Volunteer = require("../mongo-models/users-volunteer");
+const Volunteer = require('../mongo-models/users-volunteer');
 
 const volunteerResolvers = {
   createVolunteer: ({ volunteerInput }) => {
@@ -11,7 +11,15 @@ const volunteerResolvers = {
       profilePhoto: volunteerInput.profilePhoto,
     });
     return newVolunteer.save().then(({ _doc }) => {
-      console.log(_doc);
+      return { ..._doc };
+    });
+  },
+  volunteers: () => {
+    return Volunteer.find().then((result) => {
+      const output = result.map((user) => {
+        return { ...user._doc, password: 'null' };
+      });
+      return output;
     });
   },
 };
