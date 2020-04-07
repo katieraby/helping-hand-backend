@@ -6,13 +6,18 @@ const userResolvers = {
       email: userInput.email,
       name: userInput.name,
       password: userInput.password,
-      location: userInput.location,
+      postcode: userInput.postcode,
       distanceToTravel: userInput.distanceToTravel,
       profilePhoto: userInput.profilePhoto,
     });
-    return newUser.save().then(({ _doc }) => {
-      return { ..._doc };
-    });
+    return newUser
+      .save()
+      .then(({ _doc }) => {
+        return { ..._doc };
+      })
+      .catch((err) => {
+        next(err);
+      });
   },
   users: () => {
     return User.find().then((result) => {

@@ -1,23 +1,30 @@
 const { buildSchema } = require("graphql");
 
-// ShoppingListId: [ShoppingList!]
-
 const schema = buildSchema(`
   type User {
     _id: ID!
     name: String!
     email: String!
     password: String!
-    location: String!
+    postcode: String!
+    streetAddress: String
+    city: String
     distanceToTravel: Int!
     profilePhoto: String!
+    ShoppingListId: [ShoppingList!]
+  }
+
+  type ShoppingList {
+    _id: ID!
   }
 
   input UserInput {
     name: String!
     email: String!
     password: String!
-    location: String!
+    postcode: String!
+    streetAddress: String
+    city: String
     distanceToTravel: Int!
     profilePhoto: String!
   }
