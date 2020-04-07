@@ -70,12 +70,9 @@ describe("User Resolvers", () => {
           "distanceToTravel",
           "profilePhoto",
         ]);
-      })
-      .catch((err) => {
-        console.log(err);
       });
   });
-  it("POST returns status 400 when no name is provided", () => {
+  it("POST - Returns status 400 when no name is provided", () => {
     return request
       .post("/graphql")
       .send({
@@ -85,12 +82,12 @@ describe("User Resolvers", () => {
       .expect(400);
   });
 
-  it("GET: 200 - successfully returns all users", () => {
+  it("GET - Successfully returns all users", () => {
     return request
       .post("/graphql")
       .send({
         query:
-          "query { users {_id, name, email, postcode, password, streetAddress, city, distanceToTravel, profilePhoto, ShoppingListId {_id}}}",
+          "query { users {_id, name, email, postcode, password, streetAddress, city, distanceToTravel, profilePhoto, shoppingListId {_id}}}",
       })
       .expect(200)
       .then(({ body }) => {
@@ -105,11 +102,8 @@ describe("User Resolvers", () => {
           "city",
           "distanceToTravel",
           "profilePhoto",
-          "ShoppingListId",
+          "shoppingListId",
         ]);
-      })
-      .catch((err) => {
-        console.log(err);
       });
   });
 });
@@ -120,14 +114,43 @@ describe("ShoppingList Resolvers", () => {
       .post("/graphql")
       .send({
         query:
-          'mutation {createShoppingList(shoppingListInput: {helpee: "5e8c5e343c6852bcb9a41058", listImage: "imageurl", listText: "bread, milk"}) {_id, orderStatus, helpee {name}, volunteer {name}, listImage, listText, createdAt, updatedAt}}',
+          'mutation {createShoppingList(shoppingListInput: { helpee: "5e8c5e343c6852bcb9a41058", listImage: "imageurl", listText: ["bread", "milk"]}) {_id, orderStatus, helpee {name}, volunteer {name}, listImage, listText, createdAt, updatedAt}}',
       })
       .expect(200)
       .then(({ body }) => {
-        console.log("test >>>>", body);
+        const { createShoppingList } = body.data;
+        expect(createShoppingList).to.have.all.keys([
+          "_id",
+          "createdAt",
+          "updatedAt",
+          "orderStatus",
+          "volunteer",
+          "helpee",
+          "listImage",
+          "listText",
+        ]);
+      });
+  });
+  it("GET - Successfully return shopping lists", () => {
+    return request
+      .post("/graphql")
+      .send({
+        query:
+          "query { shoppingLists{_id, orderStatus, helpee {_id}, volunteer {_id}, listImage, listText, createdAt, updatedAt}}",
       })
-      .catch((err) => {
-        console.dir(err);
+      .expect(200)
+      .then(({ body }) => {
+        const { shoppingLists } = body.data;
+        expect(shoppingLists[0]).to.have.all.keys([
+          "_id",
+          "createdAt",
+          "updatedAt",
+          "orderStatus",
+          "volunteer",
+          "helpee",
+          "listImage",
+          "listText",
+        ]);
       });
   });
 });

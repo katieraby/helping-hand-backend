@@ -5,11 +5,11 @@ const shoppingListResolvers = {
   shoppingLists: () => {
     return ShoppingList.find()
       .populate("helpee")
+      .populate("volunteer") // <<<< CHECK!!
       .then((result) => {
         return result;
       });
   },
-
   createShoppingList: ({ shoppingListInput }) => {
     const newShoppingList = new ShoppingList({
       helpee: shoppingListInput.helpee,
@@ -18,7 +18,6 @@ const shoppingListResolvers = {
     });
     const helpee = User.findById(shoppingListInput.helpee);
     let changedShoppingList;
-
     return Promise.all([helpee, newShoppingList.save()])
       .then(([helpee, shoppingList]) => {
         const { _doc } = shoppingList;
@@ -26,19 +25,19 @@ const shoppingListResolvers = {
         return Promise.all([_doc, helpee.save()]);
       })
       .then(([shoppingList, helpee]) => {
-        console.log("shoppingList>>>>>", shoppingList);
-        console.log("helpee>>>>>", helpee);
         changedShoppingList = {
           ...shoppingList,
           createdAt: new Date(shoppingList.createdAt),
           updatedAt: new Date(shoppingList.updatedAt),
-          // helpee: helpee,
-          helpee: helpee.bind(this, shoppingList.helpee),
+          helpee: helpee,
+          // helpee: helpee.bind(this, shoppingList.helpee),
         };
-        console.log("changedShoppingList>>>>>>>", changedShoppingList);
+        console.log(changedShoppingList);
         return changedShoppingList;
       });
   },
+  //addVolunteerToShoppingList
+  //changeStatusOfShoppingList
 };
 
 module.exports = { shoppingListResolvers };
