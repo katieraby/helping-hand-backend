@@ -2,6 +2,14 @@ const ShoppingList = require("../mongo-models/shopping-list");
 const User = require("../mongo-models/users");
 
 const shoppingListResolvers = {
+  shoppingLists: () => {
+    return ShoppingList.find()
+      .populate("helpee")
+      .then((result) => {
+        return result;
+      });
+  },
+
   createShoppingList: ({ shoppingListInput }) => {
     const newShoppingList = new ShoppingList({
       helpee: shoppingListInput.helpee,
@@ -24,7 +32,8 @@ const shoppingListResolvers = {
           ...shoppingList,
           createdAt: new Date(shoppingList.createdAt),
           updatedAt: new Date(shoppingList.updatedAt),
-          helpee: helpee,
+          // helpee: helpee,
+          helpee: helpee.bind(this, shoppingList.helpee),
         };
         console.log("changedShoppingList>>>>>>>", changedShoppingList);
         return changedShoppingList;

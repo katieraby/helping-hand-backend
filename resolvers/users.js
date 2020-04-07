@@ -20,12 +20,14 @@ const userResolvers = {
       });
   },
   users: () => {
-    return User.find().then((result) => {
-      const output = result.map((user) => {
-        return { ...user._doc, password: "null" };
+    return User.find()
+      .populate("shoppingListId")
+      .then((result) => {
+        const output = result.map((user) => {
+          return { ...user._doc, password: "null" };
+        });
+        return output;
       });
-      return output;
-    });
   },
 };
 

@@ -11,7 +11,7 @@ const schema = buildSchema(`
     city: String
     distanceToTravel: Int!
     profilePhoto: String!
-    ShoppingListId: [ShoppingList!]
+    shoppingListId: [ShoppingList!]
   }
 
   type ShoppingList {
@@ -44,6 +44,7 @@ const schema = buildSchema(`
 
   type RootQuery {
     users: [User!]
+    shoppingLists: [ShoppingList!]
   }
 
   type RootMutation {
