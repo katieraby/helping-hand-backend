@@ -1,3 +1,28 @@
+// example code from Jonny
+
+// const mongoose = require('mongoose');
+// const { Owner, Animal } = require('../models');
+// const { sample } = require('lodash')
+
+// const seedDb = (ownerData, animalData) => {
+//   return mongoose.connection.dropDatabase()
+//     .then(() => {
+//       return Owner.insertMany(ownerData)
+//     })
+//     .then(ownerDocs => {
+//       const newAnimals = animalData.map(animal => {
+//         let ownerId = Math.random() < 0.5 ? null : sample(ownerDocs)._id
+//         return {
+//           ...animal,
+//           ownerId
+//         }
+//       })
+//       return Animal.insertMany(newAnimals)
+//     })
+// }
+
+// module.exports = seedDb;
+
 process.env.NODE_ENV = "test";
 
 const mongoose = require("mongoose");
@@ -27,7 +52,7 @@ const databaseName = "test";
 // afterEach(async () => await clearDatabase());
 
 describe("User Resolvers", () => {
-  it("POST successfully adds new user", () => {
+  it("POST - Successfully adds new user", () => {
     return request
       .post("/graphql")
       .send({
@@ -85,6 +110,24 @@ describe("User Resolvers", () => {
       })
       .catch((err) => {
         console.log(err);
+      });
+  });
+});
+
+describe("ShoppingList Resolvers", () => {
+  it("POST - Successfully adds new shopping list", () => {
+    return request
+      .post("/graphql")
+      .send({
+        query:
+          'mutation {createShoppingList(shoppingListInput: {helpee: "5e8c5e343c6852bcb9a41058", listImage: "imageurl", listText: "bread, milk"}) {_id, orderStatus, helpee, volunteer, listImage, listText, createdAt, updatedAt}}',
+      })
+      .expect(200)
+      .then(({ body }) => {
+        console.log("test >>>>", body);
+      })
+      .catch((err) => {
+        console.dir(err);
       });
   });
 });

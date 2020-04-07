@@ -16,6 +16,13 @@ const schema = buildSchema(`
 
   type ShoppingList {
     _id: ID!
+    orderStatus: String!
+    helpee: User!
+    volunteer: User
+    listImage: String
+    listText: [String]
+    createdAt: String!
+    updatedAt: String!
   }
 
   input UserInput {
@@ -29,12 +36,19 @@ const schema = buildSchema(`
     profilePhoto: String!
   }
 
+  input ShoppingListInput {
+      helpee: String!
+      listImage: String
+      listText: [String]
+  }
+
   type RootQuery {
     users: [User!]
   }
 
   type RootMutation {
-      createUser(userInput: UserInput): User
+    createUser(userInput: UserInput): User!
+    createShoppingList(shoppingListInput: ShoppingListInput): ShoppingList!
   }
 
   schema {
