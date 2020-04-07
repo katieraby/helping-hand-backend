@@ -1,7 +1,7 @@
-const { volunteerResolvers } = require('./volunteers');
+const { userResolvers } = require("./users");
 
 const rootResolver = {
-  ...volunteerResolvers,
+  ...userResolvers,
 };
 
 module.exports = { rootResolver };

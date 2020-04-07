@@ -1,9 +1,9 @@
-const { buildSchema } = require('graphql');
+const { buildSchema } = require("graphql");
 
 // ShoppingListId: [ShoppingList!]
 
 const schema = buildSchema(`
-  type Volunteer {
+  type User {
     _id: ID!
     name: String!
     email: String!
@@ -13,7 +13,7 @@ const schema = buildSchema(`
     profilePhoto: String!
   }
 
-  input VolunteerInput {
+  input UserInput {
     name: String!
     email: String!
     password: String!
@@ -23,11 +23,11 @@ const schema = buildSchema(`
   }
 
   type RootQuery {
-    volunteers: [Volunteer!]
+    users: [User!]
   }
 
   type RootMutation {
-      createVolunteer(volunteerInput: VolunteerInput): Volunteer
+      createUser(userInput: UserInput): User
   }
 
   schema {
