@@ -4,7 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test-server": "NODE_ENV=test node listen.js",
+    "test-server": "NODE_ENV=test nodemon listen.js",
     "test": "mocha spec",
     "listen": "nodemon listen.js"
   },

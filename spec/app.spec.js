@@ -120,7 +120,7 @@ describe("ShoppingList Resolvers", () => {
       .post("/graphql")
       .send({
         query:
-          'mutation {createShoppingList(shoppingListInput: {helpee: "5e8c5e343c6852bcb9a41058", listImage: "imageurl", listText: "bread, milk"}) {_id, orderStatus, helpee, volunteer, listImage, listText, createdAt, updatedAt}}',
+          'mutation {createShoppingList(shoppingListInput: {helpee: "5e8c5e343c6852bcb9a41058", listImage: "imageurl", listText: "bread, milk"}) {_id, orderStatus, helpee {name}, volunteer {name}, listImage, listText, createdAt, updatedAt}}',
       })
       .expect(200)
       .then(({ body }) => {
