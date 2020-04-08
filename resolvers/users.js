@@ -17,7 +17,7 @@ const userResolvers = {
         return newUser.save();
       })
       .then(({ _doc }) => {
-        return { ..._doc };
+        return { ..._doc, password: null };
       })
       .catch((err) => {
         throw err;
@@ -27,10 +27,10 @@ const userResolvers = {
     return User.find()
       .populate("shoppingListId")
       .then((result) => {
-        // const output = result.map((user) => {
-        //   return { ...user._doc};
-        // });
-        return result;
+        const output = result.map((user) => {
+          return { ...user._doc, password: null };
+        });
+        return output;
       });
   },
   //login

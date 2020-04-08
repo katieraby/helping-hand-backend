@@ -5,7 +5,7 @@ const schema = buildSchema(`
     _id: ID!
     name: String!
     email: String!
-    password: String!
+    password: String
     postcode: String!
     streetAddress: String
     city: String
