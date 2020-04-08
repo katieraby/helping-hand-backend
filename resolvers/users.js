@@ -1,5 +1,5 @@
-const User = require("../mongo-models/users");
-const bcrypt = require("bcryptjs");
+const User = require('../mongo-models/users');
+const bcrypt = require('bcryptjs');
 
 const userResolvers = {
   createUser: ({ userInput }) => {
@@ -11,6 +11,8 @@ const userResolvers = {
           name: userInput.name,
           password: hashedPassword,
           postcode: userInput.postcode,
+          streetAddress: userInput.streetAddress,
+          city: userInput.city,
           distanceToTravel: userInput.distanceToTravel,
           profilePhoto: userInput.profilePhoto,
         });
@@ -25,7 +27,7 @@ const userResolvers = {
   },
   users: () => {
     return User.find()
-      .populate("shoppingListId")
+      .populate('shoppingListId')
       .then((result) => {
         const output = result.map((user) => {
           return { ...user._doc, password: null };
