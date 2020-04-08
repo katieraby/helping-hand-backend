@@ -40,12 +40,10 @@ const userResolvers = {
   },
   //login
   userById: ({ id }) => {
-    console.log(id);
     const mongooseID = mongoose.Types.ObjectId(id);
-    console.log(id);
     return User.findById(mongooseID).then((result) => {
-      console.log('hello');
-      console.log(result);
+      const output = { ...result._doc, password: null };
+      return output;
     });
   },
 };
