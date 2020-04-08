@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -10,7 +10,8 @@ const userSchema = new Schema({
   city: { type: String, required: false },
   distanceToTravel: { type: Number, required: false, default: 5 },
   profilePhoto: { type: String, required: false },
-  shoppingListId: [{ type: Schema.Types.ObjectId, ref: "ShoppingList" }],
+  shoppingListId: [{ type: Schema.Types.ObjectId, ref: 'ShoppingList' }],
+  userType: { type: String, required: true },
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);

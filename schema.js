@@ -1,4 +1,4 @@
-const { buildSchema } = require("graphql");
+const { buildSchema } = require('graphql');
 
 const schema = buildSchema(`
   type User {
@@ -12,6 +12,7 @@ const schema = buildSchema(`
     distanceToTravel: Int!
     profilePhoto: String!
     shoppingListId: [ShoppingList!]
+    userType: String
   }
 
   type ShoppingList {
@@ -34,6 +35,7 @@ const schema = buildSchema(`
     city: String
     distanceToTravel: Int!
     profilePhoto: String!
+    userType: String!
   }
 
   input ShoppingListInput {
@@ -50,6 +52,7 @@ const schema = buildSchema(`
 
   type RootQuery {
     users: [User!]
+    userById(id: ID!): User
     shoppingLists: [ShoppingList!]
     login(email: String!, password: String!): AuthData!
   }

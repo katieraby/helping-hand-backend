@@ -1,8 +1,10 @@
 const User = require('../mongo-models/users');
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
 const userResolvers = {
   createUser: ({ userInput }) => {
+    console.log(userInput);
     return bcrypt
       .hash(userInput.password, 12)
       .then((hashedPassword) => {
@@ -15,6 +17,7 @@ const userResolvers = {
           city: userInput.city,
           distanceToTravel: userInput.distanceToTravel,
           profilePhoto: userInput.profilePhoto,
+          userType: userInput.userType,
         });
         return newUser.save();
       })
@@ -36,6 +39,15 @@ const userResolvers = {
       });
   },
   //login
+  userById: ({ id }) => {
+    console.log(id);
+    const mongooseID = mongoose.Types.ObjectId(id);
+    console.log(id);
+    return User.findById(mongooseID).then((result) => {
+      console.log('hello');
+      console.log(result);
+    });
+  },
 };
 
 module.exports = { userResolvers };
