@@ -1,7 +1,16 @@
 const express = require('express');
 const graphqlHTTP = require('express-graphql');
 const bodyParser = require('body-parser');
-const { mongoUsername, mongoPassword } = require('./config');
+let mongoUsername, mongoPassword;
+if (!process.env.MONGODB_USERNAME && !process.env.MONGODB_PASSWORD) {
+  const dbConfig = require('./config');
+  mongoUsername = dbConfig.mongoUsername;
+  mongoPassword = dbConfig.mongoPassword;
+} else {
+  mongoUsername = process.env.MONGODB_USERNAME;
+  mongoPassword = process.env.MONGODB_PASSWORD;
+}
+// const { mongoUsername, mongoPassword } = require('./config');
 const { rootResolver } = require('./resolvers/index');
 
 const mongoose = require('mongoose');
