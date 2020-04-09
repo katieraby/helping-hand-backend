@@ -45,12 +45,18 @@ const userResolvers = {
         return output;
       });
   },
-  //login
   userById: ({ id }) => {
     const mongooseID = mongoose.Types.ObjectId(id);
     return User.findById(mongooseID).then((result) => {
       const output = { ...result._doc, password: null };
       return output;
+    });
+  },
+  login: ({ email, password }) => {
+    return User.findOne({ email: email }).then((result) => {
+      return bcrypt.compare(password, result.password).then((result) => {
+        return result;
+      });
     });
   },
 };
