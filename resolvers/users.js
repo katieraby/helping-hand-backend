@@ -15,6 +15,7 @@ const userResolvers = {
             const newUser = new User({
               email: userInput.email,
               name: userInput.name,
+              phoneNumber: userInput.phoneNumber,
               password: hashedPassword,
               postcode: userInput.postcode,
               streetAddress: userInput.streetAddress,

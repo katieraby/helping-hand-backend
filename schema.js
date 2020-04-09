@@ -5,6 +5,7 @@ const schema = buildSchema(`
     _id: ID!
     name: String!
     email: String!
+    phoneNumber: String!
     password: String
     postcode: String!
     streetAddress: String
@@ -29,6 +30,7 @@ const schema = buildSchema(`
   input UserInput {
     name: String!
     email: String!
+    phoneNumber: String!
     password: String!
     postcode: String!
     streetAddress: String
