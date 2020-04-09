@@ -52,13 +52,13 @@ const schema = buildSchema(`
 
   type RootQuery {
     users: [User!]
-    userById(id: ID!): User
+    userById(id: ID!): User!
     shoppingLists: [ShoppingList!]
     login(email: String!, password: String!): AuthData!
   }
 
   type RootMutation {
-    createUser(userInput: UserInput): User!
+    createUser(userInput: UserInput): User
     createShoppingList(shoppingListInput: ShoppingListInput): ShoppingList!
   }
 

@@ -4,29 +4,35 @@ const bcrypt = require('bcryptjs');
 
 const userResolvers = {
   createUser: ({ userInput }) => {
-    console.log(userInput);
-    return bcrypt
-      .hash(userInput.password, 12)
-      .then((hashedPassword) => {
-        const newUser = new User({
-          email: userInput.email,
-          name: userInput.name,
-          password: hashedPassword,
-          postcode: userInput.postcode,
-          streetAddress: userInput.streetAddress,
-          city: userInput.city,
-          distanceToTravel: userInput.distanceToTravel,
-          profilePhoto: userInput.profilePhoto,
-          userType: userInput.userType,
-        });
-        return newUser.save();
-      })
-      .then(({ _doc }) => {
-        return { ..._doc, password: null };
-      })
-      .catch((err) => {
-        throw err;
-      });
+    return User.find({ email: userInput.email }).then((result) => {
+      if (result.length > 0) {
+        console.log("Oh no you don't");
+        throw new Error('User already exists');
+      } else {
+        return bcrypt
+          .hash(userInput.password, 12)
+          .then((hashedPassword) => {
+            const newUser = new User({
+              email: userInput.email,
+              name: userInput.name,
+              password: hashedPassword,
+              postcode: userInput.postcode,
+              streetAddress: userInput.streetAddress,
+              city: userInput.city,
+              distanceToTravel: userInput.distanceToTravel,
+              profilePhoto: userInput.profilePhoto,
+              userType: userInput.userType,
+            });
+            return newUser.save();
+          })
+          .then(({ _doc }) => {
+            return { ..._doc, password: null };
+          })
+          .catch((err) => {
+            throw err;
+          });
+      }
+    });
   },
   users: () => {
     return User.find()
