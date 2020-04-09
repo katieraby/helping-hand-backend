@@ -6,7 +6,8 @@
   "scripts": {
     "test-server": "NODE_ENV=test nodemon listen.js",
     "test": "mocha spec",
-    "listen": "nodemon listen.js"
+    "listen": "nodemon listen.js",
+    "start": "node listen.js"
   },
   "author": "",
   "license": "ISC",

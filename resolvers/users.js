@@ -1,31 +1,42 @@
-const User = require("../mongo-models/users");
-const bcrypt = require("bcryptjs");
+const User = require('../mongo-models/users');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const userResolvers = {
   createUser: ({ userInput }) => {
-    return bcrypt
-      .hash(userInput.password, 12)
-      .then((hashedPassword) => {
-        const newUser = new User({
-          email: userInput.email,
-          name: userInput.name,
-          password: hashedPassword,
-          postcode: userInput.postcode,
-          distanceToTravel: userInput.distanceToTravel,
-          profilePhoto: userInput.profilePhoto,
-        });
-        return newUser.save();
-      })
-      .then(({ _doc }) => {
-        return { ..._doc, password: null };
-      })
-      .catch((err) => {
-        throw err;
-      });
+    return User.find({ email: userInput.email }).then((result) => {
+      if (result.length > 0) {
+        throw new Error('User already exists');
+      } else {
+        return bcrypt
+          .hash(userInput.password, 12)
+          .then((hashedPassword) => {
+            const newUser = new User({
+              email: userInput.email,
+              name: userInput.name,
+              phoneNumber: userInput.phoneNumber,
+              password: hashedPassword,
+              postcode: userInput.postcode,
+              streetAddress: userInput.streetAddress,
+              city: userInput.city,
+              distanceToTravel: userInput.distanceToTravel,
+              profilePhoto: userInput.profilePhoto,
+              userType: userInput.userType,
+            });
+            return newUser.save();
+          })
+          .then(({ _doc }) => {
+            return { ..._doc, password: null };
+          })
+          .catch((err) => {
+            throw err;
+          });
+      }
+    });
   },
   users: () => {
     return User.find()
-      .populate("shoppingListId")
+      .populate('shoppingListId')
       .then((result) => {
         const output = result.map((user) => {
           return { ...user._doc, password: null };
@@ -33,7 +44,31 @@ const userResolvers = {
         return output;
       });
   },
-  //login
+  userById: ({ id }) => {
+    const mongooseID = mongoose.Types.ObjectId(id);
+    return User.findById(mongooseID).then((result) => {
+      const output = { ...result._doc, password: null };
+      return output;
+    });
+  },
+  login: ({ email, password }) => {
+    return User.findOne({ email: email }).then((result) => {
+      return bcrypt.compare(password, result.password).then((result) => {
+        return result;
+      });
+    });
+  },
+  updateUser: ({ id, userInput }) => {
+    const mongooseID = mongoose.Types.ObjectId(id);
+    return bcrypt.hash(userInput.password, 12).then((hashedPassword) => {
+      const updatedUser = { ...userInput, password: hashedPassword };
+      return User.findByIdAndUpdate(mongooseID, updatedUser).then((result) => {
+        return User.findById(result._doc._id).then((result) => {
+          return { ...result._doc, password: null };
+        });
+      });
+    });
+  },
 };
 
 module.exports = { userResolvers };
