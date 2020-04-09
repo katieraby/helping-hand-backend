@@ -6,7 +6,6 @@ const userResolvers = {
   createUser: ({ userInput }) => {
     return User.find({ email: userInput.email }).then((result) => {
       if (result.length > 0) {
-        console.log("Oh no you don't");
         throw new Error('User already exists');
       } else {
         return bcrypt
@@ -56,6 +55,17 @@ const userResolvers = {
     return User.findOne({ email: email }).then((result) => {
       return bcrypt.compare(password, result.password).then((result) => {
         return result;
+      });
+    });
+  },
+  updateUser: ({ id, userInput }) => {
+    const mongooseID = mongoose.Types.ObjectId(id);
+    return bcrypt.hash(userInput.password, 12).then((hashedPassword) => {
+      const updatedUser = { ...userInput, password: hashedPassword };
+      return User.findByIdAndUpdate(mongooseID, updatedUser).then((result) => {
+        return User.findById(result._doc._id).then((result) => {
+          return { ...result._doc, password: null };
+        });
       });
     });
   },

@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
+mongoose.set('useFindAndModify', false);
+
 const userSchema = new Schema({
   name: { type: String, required: true },
   email: { type: String, required: true },

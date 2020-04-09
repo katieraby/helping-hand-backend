@@ -60,8 +60,9 @@ const schema = buildSchema(`
   }
 
   type RootMutation {
-    createUser(userInput: UserInput): User
+    createUser(userInput: UserInput!): User!
     createShoppingList(shoppingListInput: ShoppingListInput): ShoppingList!
+    updateUser(id: ID!, userInput: UserInput!): User!
   }
 
   schema {
