@@ -13,9 +13,12 @@ const shoppingListResolvers = {
   },
   shoppingListById: ({ id }) => {
     const mongooseID = mongoose.Types.ObjectId(id);
-    return ShoppingList.findById(mongooseID).then((result) => {
-      return result;
-    });
+    return ShoppingList.findById(mongooseID)
+      .populate('helpee')
+      .populate('volunteer')
+      .then((result) => {
+        return result;
+      });
   },
   createShoppingList: ({ shoppingListInput }) => {
     const newShoppingList = new ShoppingList({
