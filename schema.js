@@ -11,7 +11,7 @@ const schema = buildSchema(`
     streetAddress: String
     city: String
     distanceToTravel: Int!
-    profilePhoto: String!
+    profilePhoto: String
     shoppingListId: [ShoppingList!]
     userType: String
   }
@@ -36,7 +36,7 @@ const schema = buildSchema(`
     streetAddress: String
     city: String
     distanceToTravel: Int!
-    profilePhoto: String!
+    profilePhoto: String
     userType: String!
   }
 
@@ -56,6 +56,7 @@ const schema = buildSchema(`
     users: [User!]
     userById(id: ID!): User!
     shoppingLists: [ShoppingList!]
+    shoppingListById(id: ID!): ShoppingList!
     login(email: String!, password: String!): User!
   }
 
