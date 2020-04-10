@@ -56,7 +56,7 @@ const schema = buildSchema(`
     users: [User!]
     userById(id: ID!): User!
     shoppingLists: [ShoppingList!]
-    login(email: String!, password: String!): Boolean!
+    login(email: String!, password: String!): User!
   }
 
   type RootMutation {

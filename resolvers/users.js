@@ -52,9 +52,13 @@ const userResolvers = {
     });
   },
   login: ({ email, password }) => {
-    return User.findOne({ email: email }).then((result) => {
-      return bcrypt.compare(password, result.password).then((result) => {
-        return result;
+    return User.findOne({ email: email }).then((user) => {
+      return bcrypt.compare(password, user.password).then((result) => {
+        if (result) {
+          return user;
+        } else {
+          throw new Error('Incorrect email or password');
+        }
       });
     });
   },
