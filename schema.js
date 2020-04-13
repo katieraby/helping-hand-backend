@@ -10,7 +10,7 @@ const schema = buildSchema(`
     postcode: String!
     streetAddress: String
     city: String
-    distanceToTravel: Int!
+    distanceToTravel: Float
     profilePhoto: String
     shoppingListId: [ShoppingList!]
     userType: String
@@ -35,7 +35,7 @@ const schema = buildSchema(`
     postcode: String!
     streetAddress: String
     city: String
-    distanceToTravel: Int!
+    distanceToTravel: Float
     profilePhoto: String
     userType: String!
   }
