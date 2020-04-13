@@ -1,6 +1,14 @@
 const ShoppingList = require('../mongo-models/shopping-list');
 const User = require('../mongo-models/users');
 const mongoose = require('mongoose');
+const axios = require('axios');
+let API_KEY;
+if (!process.env.API_KEY) {
+  const apiConfig = require('../config');
+  API_KEY = apiConfig.mapAPIKey;
+} else {
+  API_KEY = process.env.API_KEY;
+}
 
 const shoppingListResolvers = {
   shoppingLists: () => {
@@ -45,6 +53,33 @@ const shoppingListResolvers = {
         console.log(changedShoppingList);
         return changedShoppingList;
       });
+  },
+  filterByDistance: ({ target }) => {
+    volunteer = User.findById(target);
+    lists = ShoppingList.find().populate('helpee');
+    Promise.all([volunteer, lists]).then(([volunteer, lists]) => {
+      const formattedLists = [];
+      lists.forEach((list) => {
+        const listObj = {
+          id: list._id,
+          location: list.helpee.locationLatLng,
+        };
+        formattedLists.push(listObj);
+      });
+      const urlArr = [];
+      formattedLists.forEach((list) => {
+        urlArr.push(list.location.join(','));
+      });
+      axios
+        .get(
+          `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${volunteer.locationLatLng.join(
+            ','
+          )}&destinations=${urlArr.join('|')}&key=${API_KEY}`
+        )
+        .then((res) => {
+          console.log(res.data);
+        });
+    });
   },
   //addVolunteerToShoppingList
   //changeStatusOfShoppingList
