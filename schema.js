@@ -14,6 +14,7 @@ const schema = buildSchema(`
     profilePhoto: String
     shoppingListId: [ShoppingList!]
     userType: String
+    locationLatLong: [Float]
   }
 
   type ShoppingList {
@@ -25,6 +26,7 @@ const schema = buildSchema(`
     listText: [String]
     createdAt: String!
     updatedAt: String!
+    locationLatLong: [Float]
   }
 
   input UserInput {

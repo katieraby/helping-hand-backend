@@ -15,6 +15,7 @@ const userSchema = new Schema({
   profilePhoto: { type: String, required: false },
   shoppingListId: [{ type: Schema.Types.ObjectId, ref: 'ShoppingList' }],
   userType: { type: String, required: true },
+  locationLatLong: [{ type: Number, required: false }],
 });
 
 module.exports = mongoose.model('User', userSchema);
