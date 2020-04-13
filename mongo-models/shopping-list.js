@@ -8,7 +8,6 @@ const shoppingListSchema = new Schema(
     volunteer: { type: Schema.Types.ObjectId, ref: 'User', required: false },
     listImage: { type: String, required: false },
     listText: [{ type: String, required: false }],
-    locationLatLong: [{ type: Number, required: false }],
   },
   { timestamps: true }
 );
