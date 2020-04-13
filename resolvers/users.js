@@ -21,10 +21,6 @@ const userResolvers = {
             `https://maps.googleapis.com/maps/api/geocode/json?address=${userInput.streetAddress},${userInput.city},${userInput.postcode}&key=${API_KEY}`
           )
           .then((res) => {
-            console.log(
-              res.data.results[0].geometry.location.lat,
-              res.data.results[0].geometry.location.lng
-            );
             const locationLatLng = [
               res.data.results[0].geometry.location.lat,
               res.data.results[0].geometry.location.lng,
