@@ -1,6 +1,14 @@
 const ShoppingList = require('../mongo-models/shopping-list');
 const User = require('../mongo-models/users');
 const mongoose = require('mongoose');
+const axios = require('axios');
+let API_KEY;
+if (!process.env.API_KEY) {
+  const apiConfig = require('../config');
+  API_KEY = apiConfig.mapAPIKey;
+} else {
+  API_KEY = process.env.API_KEY;
+}
 
 const shoppingListResolvers = {
   shoppingLists: () => {
@@ -45,6 +53,52 @@ const shoppingListResolvers = {
         console.log(changedShoppingList);
         return changedShoppingList;
       });
+  },
+  filterByDistance: ({ target }) => {
+    volunteer = User.findById(target);
+    lists = ShoppingList.find().populate('helpee');
+    return Promise.all([volunteer, lists]).then(([volunteer, lists]) => {
+      const formattedLists = [];
+      lists.forEach((list) => {
+        const listObj = {
+          id: list._id,
+          location: list.helpee.locationLatLng,
+        };
+        formattedLists.push(listObj);
+      });
+      const urlArr = [];
+      formattedLists.forEach((list) => {
+        urlArr.push(list.location.join(','));
+      });
+      return axios
+        .get(
+          `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${volunteer.locationLatLng.join(
+            ','
+          )}&destinations=${urlArr.join('|')}&key=${API_KEY}`
+        )
+        .then((res) => {
+          // console.log(res.data.rows[0].elements);
+          const distances = [];
+          res.data.rows[0].elements.forEach((el, i) => {
+            const distanceToTarget = Number(el.distance.text.split(' ')[0]);
+            formattedLists[i].distance = distanceToTarget;
+          });
+          const listsWithinDistance = formattedLists.filter((list) => {
+            return list.distance <= volunteer.distanceToTravel;
+          });
+          const ids = [];
+          listsWithinDistance.forEach((list) => {
+            ids.push(list.id);
+          });
+          return ShoppingList.find({
+            _id: { $in: ids },
+          })
+            .populate('helpee')
+            .then((res) => {
+              return res;
+            });
+        });
+    });
   },
   //addVolunteerToShoppingList
   //changeStatusOfShoppingList

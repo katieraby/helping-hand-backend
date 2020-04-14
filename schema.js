@@ -14,6 +14,7 @@ const schema = buildSchema(`
     profilePhoto: String
     shoppingListId: [ShoppingList!]
     userType: String
+    locationLatLng: [Float]
   }
 
   type ShoppingList {
@@ -58,6 +59,7 @@ const schema = buildSchema(`
     shoppingLists: [ShoppingList!]
     shoppingListById(id: ID!): ShoppingList!
     login(email: String!, password: String!): User!
+    filterByDistance(target: ID!): [ShoppingList!]
   }
 
   type RootMutation {

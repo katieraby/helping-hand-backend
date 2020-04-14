@@ -1,6 +1,14 @@
 const User = require('../mongo-models/users');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const axios = require('axios');
+let API_KEY;
+if (!process.env.API_KEY) {
+  const apiConfig = require('../config');
+  API_KEY = apiConfig.mapAPIKey;
+} else {
+  API_KEY = process.env.API_KEY;
+}
 
 const userResolvers = {
   createUser: ({ userInput }) => {
@@ -8,28 +16,39 @@ const userResolvers = {
       if (result.length > 0) {
         throw new Error('User already exists');
       } else {
-        return bcrypt
-          .hash(userInput.password, 12)
-          .then((hashedPassword) => {
-            const newUser = new User({
-              email: userInput.email,
-              name: userInput.name,
-              phoneNumber: userInput.phoneNumber,
-              password: hashedPassword,
-              postcode: userInput.postcode,
-              streetAddress: userInput.streetAddress,
-              city: userInput.city,
-              distanceToTravel: userInput.distanceToTravel,
-              profilePhoto: userInput.profilePhoto,
-              userType: userInput.userType,
-            });
-            return newUser.save();
-          })
-          .then(({ _doc }) => {
-            return { ..._doc, password: null };
-          })
-          .catch((err) => {
-            throw err;
+        return axios
+          .get(
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${userInput.streetAddress},${userInput.city},${userInput.postcode}&key=${API_KEY}`
+          )
+          .then((res) => {
+            const locationLatLng = [
+              res.data.results[0].geometry.location.lat,
+              res.data.results[0].geometry.location.lng,
+            ];
+            return bcrypt
+              .hash(userInput.password, 12)
+              .then((hashedPassword) => {
+                const newUser = new User({
+                  email: userInput.email,
+                  name: userInput.name,
+                  phoneNumber: userInput.phoneNumber,
+                  password: hashedPassword,
+                  postcode: userInput.postcode,
+                  streetAddress: userInput.streetAddress,
+                  city: userInput.city,
+                  distanceToTravel: userInput.distanceToTravel,
+                  profilePhoto: userInput.profilePhoto,
+                  userType: userInput.userType,
+                  locationLatLng: locationLatLng,
+                });
+                return newUser.save();
+              })
+              .then(({ _doc }) => {
+                return { ..._doc, password: null };
+              })
+              .catch((err) => {
+                throw err;
+              });
           });
       }
     });
