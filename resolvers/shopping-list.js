@@ -57,7 +57,7 @@ const shoppingListResolvers = {
   filterByDistance: ({ target }) => {
     volunteer = User.findById(target);
     lists = ShoppingList.find().populate('helpee');
-    Promise.all([volunteer, lists]).then(([volunteer, lists]) => {
+    return Promise.all([volunteer, lists]).then(([volunteer, lists]) => {
       const formattedLists = [];
       lists.forEach((list) => {
         const listObj = {
@@ -70,14 +70,33 @@ const shoppingListResolvers = {
       formattedLists.forEach((list) => {
         urlArr.push(list.location.join(','));
       });
-      axios
+      return axios
         .get(
           `https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${volunteer.locationLatLng.join(
             ','
           )}&destinations=${urlArr.join('|')}&key=${API_KEY}`
         )
         .then((res) => {
-          console.log(res.data);
+          // console.log(res.data.rows[0].elements);
+          const distances = [];
+          res.data.rows[0].elements.forEach((el, i) => {
+            const distanceToTarget = Number(el.distance.text.split(' ')[0]);
+            formattedLists[i].distance = distanceToTarget;
+          });
+          const listsWithinDistance = formattedLists.filter((list) => {
+            return list.distance <= volunteer.distanceToTravel;
+          });
+          const ids = [];
+          listsWithinDistance.forEach((list) => {
+            ids.push(list.id);
+          });
+          return ShoppingList.find({
+            _id: { $in: ids },
+          })
+            .populate('helpee')
+            .then((res) => {
+              return res;
+            });
         });
     });
   },
