@@ -3,29 +3,29 @@ const { buildSchema } = require('graphql');
 const schema = buildSchema(`
   type User {
     _id: ID!
-    name: String!
-    email: String!
-    phoneNumber: String!
+    name: String
+    email: String
+    phoneNumber: String
     password: String
-    postcode: String!
+    postcode: String
     streetAddress: String
     city: String
     distanceToTravel: Float
     profilePhoto: String
-    shoppingListId: [ShoppingList!]
+    shoppingListId: [ShoppingList]
     userType: String
     locationLatLng: [Float]
   }
 
   type ShoppingList {
-    _id: ID!
-    orderStatus: String!
-    helpee: User!
+    _id: ID
+    orderStatus: String
+    helpee: User
     volunteer: User
     listImage: String
     listText: [String]
-    createdAt: String!
-    updatedAt: String!
+    createdAt: String
+    updatedAt: String
   }
 
   input UserInput {
