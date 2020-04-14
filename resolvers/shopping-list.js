@@ -100,6 +100,15 @@ const shoppingListResolvers = {
         });
     });
   },
+
+  updateShoppingList: ({
+    listId,
+    volunteerId,
+    volunteerComplete,
+    helpeeComplete,
+  }) => {
+    console.log(listId);
+  },
   //addVolunteerToShoppingList
   //changeStatusOfShoppingList
 };

@@ -59,13 +59,14 @@ const schema = buildSchema(`
     shoppingLists: [ShoppingList!]
     shoppingListById(id: ID!): ShoppingList!
     login(email: String!, password: String!): User!
-    filterByDistance(target: ID!): [ShoppingList!]
+    filterByDistance(target: ID!): [ShoppingList]
   }
 
   type RootMutation {
     createUser(userInput: UserInput!): User!
     createShoppingList(shoppingListInput: ShoppingListInput): ShoppingList!
     updateUser(id: ID!, userInput: UserInput!): User!
+    updateShoppingList(listId: ID!, volunteerId: ID, volunteerComplete: Boolean, helpeeComplete: Boolean): ShoppingList!
   }
 
   schema {
