@@ -129,6 +129,14 @@ const shoppingListResolvers = {
         } else {
           throw new Error('Order already accepted or completed');
         }
+      } else if (volunteerComplete && res.orderStatus === 'accepted') {
+        res.orderStatus = 'delivered';
+        return res.save().then(() => {
+          return ShoppingList.findById(listId).then((result) => {
+            console.log(result.orderStatus);
+            return result;
+          });
+        });
       }
     });
   },
