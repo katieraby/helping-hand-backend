@@ -113,7 +113,22 @@ const shoppingListResolvers = {
     volunteerComplete,
     helpeeComplete,
   }) => {
-    console.log(listId);
+    return ShoppingList.findById(listId).then((res) => {
+      console.log(`Shopping List ID: ${listId}`);
+      if (volunteerId) {
+        console.log(`Volunteer ID: ${volunteerId}`);
+        if (!res.volunteer) {
+          return User.findById(volunteerId).then((volunteer) => {
+            res.orderStatus = 'accepted';
+            res.volunteer = volunteer;
+            res.save();
+            return ShoppingList.findById(listId).then((result) => {
+              return result;
+            });
+          });
+        }
+      }
+    });
   },
   //addVolunteerToShoppingList
   //changeStatusOfShoppingList
