@@ -71,15 +71,17 @@ const userResolvers = {
     });
   },
   login: ({ email, password }) => {
-    return User.findOne({ email: email }).then((user) => {
-      return bcrypt.compare(password, user.password).then((result) => {
-        if (result) {
-          return user;
-        } else {
-          throw new Error('Incorrect email or password');
-        }
+    return User.findOne({ email: email })
+      .populate('shoppingListId')
+      .then((user) => {
+        return bcrypt.compare(password, user.password).then((result) => {
+          if (result) {
+            return user;
+          } else {
+            throw new Error('Incorrect email or password');
+          }
+        });
       });
-    });
   },
   updateUser: ({ id, userInput }) => {
     const mongooseID = mongoose.Types.ObjectId(id);
