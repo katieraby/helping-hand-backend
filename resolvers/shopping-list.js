@@ -117,7 +117,7 @@ const shoppingListResolvers = {
       console.log(`Shopping List ID: ${listId}`);
       if (volunteerId) {
         console.log(`Volunteer ID: ${volunteerId}`);
-        if (!res.volunteer) {
+        if (!res.volunteer && res.orderStatus === 'pending') {
           return User.findById(volunteerId).then((volunteer) => {
             res.orderStatus = 'accepted';
             res.volunteer = volunteer;
@@ -126,6 +126,8 @@ const shoppingListResolvers = {
               return result;
             });
           });
+        } else {
+          throw new Error('Order already accepted or completed');
         }
       }
     });
