@@ -59,23 +59,6 @@ const shoppingListResolvers = {
         throw new Error('User does not exist. Check ID');
       }
     });
-    return Promise.all([helpee, newShoppingList.save()])
-      .then(([helpee, shoppingList]) => {
-        const { _doc } = shoppingList;
-        helpee.shoppingListId.push(_doc._id);
-        return Promise.all([_doc, helpee.save()]);
-      })
-      .then(([shoppingList, helpee]) => {
-        changedShoppingList = {
-          ...shoppingList,
-          createdAt: new Date(shoppingList.createdAt),
-          updatedAt: new Date(shoppingList.updatedAt),
-          helpee: helpee,
-          // helpee: helpee.bind(this, shoppingList.helpee),
-        };
-        console.log(changedShoppingList);
-        return changedShoppingList;
-      });
   },
   filterByDistance: ({ target }) => {
     volunteer = User.findById(target);
