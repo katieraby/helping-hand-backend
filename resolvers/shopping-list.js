@@ -121,13 +121,14 @@ const shoppingListResolvers = {
           return User.findById(volunteerId).then((volunteer) => {
             res.orderStatus = 'accepted';
             res.volunteer = volunteer;
-            res.save();
-            return ShoppingList.findById(listId)
-              .populate('helpee')
-              .populate('volunteer')
-              .then((result) => {
-                return result;
-              });
+            return res.save().then(() => {
+              return ShoppingList.findById(listId)
+                .populate('helpee')
+                .populate('volunteer')
+                .then((result) => {
+                  return result;
+                });
+            });
           });
         } else {
           throw new Error('Order already accepted or completed');
