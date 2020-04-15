@@ -72,7 +72,7 @@ Creates a shopping list object from data given in shoppingListInput (inputs belo
 updateShoppingList(listId: "shopping list ID" volunnteerId: "volunteer ID", volunteerComplete: boolean, helpeeComplete: voolean){return properties}
 ```
 
-This mutation is still being worked on. Only required field is listId. If volunteerId is supplied, will assign that volunteer user to the shopping list and set the orderStatus property to 'pending'. volunteerComplete and helpeeComplete are both booleans, to be sent when respective users mark the job as complete (so send true in this case). Once both are sent as true (doesn't have to be in the same mutation request), the orderStatus property will update to 'completed'.
+Only required field is listId. If `volunteerId` is supplied, will assign that volunteer user to the shopping list and set the `orderStatus` property to `'accepted'`. `volunteerComplete` and `helpeeComplete` are both booleans, to be sent when respective users mark the job as complete (so send true in this case). Once both are sent as true (not in the same mutation request), the `orderStatus` property will update to `'completed'`.
 
 ## Input
 

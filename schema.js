@@ -26,6 +26,8 @@ const schema = buildSchema(`
     listText: [String]
     createdAt: String
     updatedAt: String
+    volunteerComplete: Boolean
+    helpeeComplete: Boolean
   }
 
   input UserInput {

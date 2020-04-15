@@ -8,6 +8,8 @@ const shoppingListSchema = new Schema(
     volunteer: { type: Schema.Types.ObjectId, ref: 'User', required: false },
     listImage: { type: String, required: false },
     listText: [{ type: String, required: false }],
+    helpeeComplete: { type: Boolean, required: false },
+    volunteerComplete: { type: Boolean, required: false },
   },
   { timestamps: true }
 );

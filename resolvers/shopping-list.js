@@ -59,23 +59,6 @@ const shoppingListResolvers = {
         throw new Error('User does not exist. Check ID');
       }
     });
-    return Promise.all([helpee, newShoppingList.save()])
-      .then(([helpee, shoppingList]) => {
-        const { _doc } = shoppingList;
-        helpee.shoppingListId.push(_doc._id);
-        return Promise.all([_doc, helpee.save()]);
-      })
-      .then(([shoppingList, helpee]) => {
-        changedShoppingList = {
-          ...shoppingList,
-          createdAt: new Date(shoppingList.createdAt),
-          updatedAt: new Date(shoppingList.updatedAt),
-          helpee: helpee,
-          // helpee: helpee.bind(this, shoppingList.helpee),
-        };
-        console.log(changedShoppingList);
-        return changedShoppingList;
-      });
   },
   filterByDistance: ({ target }) => {
     volunteer = User.findById(target);
@@ -130,7 +113,63 @@ const shoppingListResolvers = {
     volunteerComplete,
     helpeeComplete,
   }) => {
-    console.log(listId);
+    return ShoppingList.findById(listId).then((res) => {
+      console.log(`Shopping List ID: ${listId}`);
+      if (volunteerId) {
+        console.log(`Volunteer ID: ${volunteerId}`);
+        if (!res.volunteer && res.orderStatus === 'pending') {
+          return User.findById(volunteerId).then((volunteer) => {
+            res.orderStatus = 'accepted';
+            res.volunteer = volunteer;
+            return res.save().then(() => {
+              return ShoppingList.findById(listId)
+                .populate('helpee')
+                .populate('volunteer')
+                .then((result) => {
+                  return result;
+                });
+            });
+          });
+        } else {
+          throw new Error('Order already accepted or completed');
+        }
+      } else if (volunteerComplete && res.orderStatus === 'accepted') {
+        res.volunteerComplete = true;
+        if (res.volunteerComplete && res.helpeeComplete) {
+          res.orderStatus = 'completed';
+        } else {
+          res.orderStatus = 'delivered';
+        }
+        return res.save().then(() => {
+          return ShoppingList.findById(listId)
+            .populate('helpee')
+            .populate('volunteer')
+            .then((result) => {
+              console.log(result.orderStatus);
+              return result;
+            });
+        });
+      } else if (helpeeComplete) {
+        res.helpeeComplete = true;
+        if (res.volunteerComplete && res.helpeeComplete) {
+          res.orderStatus = 'completed';
+        }
+        return res.save().then(() => {
+          return ShoppingList.findById(listId)
+            .populate('helpee')
+            .populate('volunteer')
+            .then((result) => {
+              console.log(result.orderStatus);
+              console.log(result.helpeeComplete);
+              return result;
+            });
+        });
+      } else {
+        throw new Error(
+          "Something went wrong, check your IDs and make sure you're not trying to set a pending order to complete without first accepting or something"
+        );
+      }
+    });
   },
   //addVolunteerToShoppingList
   //changeStatusOfShoppingList
