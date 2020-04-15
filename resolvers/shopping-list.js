@@ -36,6 +36,29 @@ const shoppingListResolvers = {
     });
     const helpee = User.findById(shoppingListInput.helpee);
     let changedShoppingList;
+    return User.findById(shoppingListInput.helpee).then((res) => {
+      if (res !== null) {
+        return Promise.all([helpee, newShoppingList.save()])
+          .then(([helpee, shoppingList]) => {
+            const { _doc } = shoppingList;
+            helpee.shoppingListId.push(_doc._id);
+            return Promise.all([_doc, helpee.save()]);
+          })
+          .then(([shoppingList, helpee]) => {
+            changedShoppingList = {
+              ...shoppingList,
+              createdAt: new Date(shoppingList.createdAt),
+              updatedAt: new Date(shoppingList.updatedAt),
+              helpee: helpee,
+              // helpee: helpee.bind(this, shoppingList.helpee),
+            };
+            console.log(changedShoppingList);
+            return changedShoppingList;
+          });
+      } else {
+        throw new Error('User does not exist. Check ID');
+      }
+    });
     return Promise.all([helpee, newShoppingList.save()])
       .then(([helpee, shoppingList]) => {
         const { _doc } = shoppingList;
@@ -99,6 +122,15 @@ const shoppingListResolvers = {
             });
         });
     });
+  },
+
+  updateShoppingList: ({
+    listId,
+    volunteerId,
+    volunteerComplete,
+    helpeeComplete,
+  }) => {
+    console.log(listId);
   },
   //addVolunteerToShoppingList
   //changeStatusOfShoppingList
