@@ -130,10 +130,23 @@ const shoppingListResolvers = {
           throw new Error('Order already accepted or completed');
         }
       } else if (volunteerComplete && res.orderStatus === 'accepted') {
+        res.volunteerComplete = true;
         res.orderStatus = 'delivered';
         return res.save().then(() => {
           return ShoppingList.findById(listId).then((result) => {
             console.log(result.orderStatus);
+            return result;
+          });
+        });
+      } else if (helpeeComplete) {
+        res.helpeeComplete = true;
+        if (res.volunteerComplete && res.helpeeComplete) {
+          res.orderStatus = 'completed';
+        }
+        return res.save().then(() => {
+          return ShoppingList.findById(listId).then((result) => {
+            console.log(result.orderStatus);
+            console.log(result.helpeeComplete);
             return result;
           });
         });
