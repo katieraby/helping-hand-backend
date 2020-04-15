@@ -122,21 +122,31 @@ const shoppingListResolvers = {
             res.orderStatus = 'accepted';
             res.volunteer = volunteer;
             res.save();
-            return ShoppingList.findById(listId).then((result) => {
-              return result;
-            });
+            return ShoppingList.findById(listId)
+              .populate('helpee')
+              .populate('volunteer')
+              .then((result) => {
+                return result;
+              });
           });
         } else {
           throw new Error('Order already accepted or completed');
         }
       } else if (volunteerComplete && res.orderStatus === 'accepted') {
         res.volunteerComplete = true;
-        res.orderStatus = 'delivered';
+        if (res.volunteerComplete && res.helpeeComplete) {
+          res.orderStatus = 'completed';
+        } else {
+          res.orderStatus = 'delivered';
+        }
         return res.save().then(() => {
-          return ShoppingList.findById(listId).then((result) => {
-            console.log(result.orderStatus);
-            return result;
-          });
+          return ShoppingList.findById(listId)
+            .populate('helpee')
+            .populate('volunteer')
+            .then((result) => {
+              console.log(result.orderStatus);
+              return result;
+            });
         });
       } else if (helpeeComplete) {
         res.helpeeComplete = true;
@@ -144,12 +154,19 @@ const shoppingListResolvers = {
           res.orderStatus = 'completed';
         }
         return res.save().then(() => {
-          return ShoppingList.findById(listId).then((result) => {
-            console.log(result.orderStatus);
-            console.log(result.helpeeComplete);
-            return result;
-          });
+          return ShoppingList.findById(listId)
+            .populate('helpee')
+            .populate('volunteer')
+            .then((result) => {
+              console.log(result.orderStatus);
+              console.log(result.helpeeComplete);
+              return result;
+            });
         });
+      } else {
+        throw new Error(
+          "Something went wrong, check your IDs and make sure you're not trying to set a pending order to complete without first accepting or something"
+        );
       }
     });
   },
