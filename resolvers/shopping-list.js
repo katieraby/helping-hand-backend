@@ -127,7 +127,9 @@ const shoppingListResolvers = {
           if (!res.volunteer && res.orderStatus === 'pending') {
             return User.findById(volunteerId).then((volunteer) => {
               res.orderStatus = 'accepted';
+              volunteer.shoppingListId.push(res);
               res.volunteer = volunteer;
+              volunteer.save();
               return res.save().then(() => {
                 return ShoppingList.findById(listId)
                   .populate('helpee')
