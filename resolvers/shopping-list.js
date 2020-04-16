@@ -62,9 +62,10 @@ const shoppingListResolvers = {
   },
   filterByDistance: ({ target }) => {
     volunteer = User.findById(target);
-    lists = ShoppingList.find().populate('helpee');
+    lists = ShoppingList.find({ orderStatus: 'pending' }).populate('helpee');
     return Promise.all([volunteer, lists]).then(([volunteer, lists]) => {
       const formattedLists = [];
+      console.log(lists);
       lists.forEach((list) => {
         const listObj = {
           id: list._id,
