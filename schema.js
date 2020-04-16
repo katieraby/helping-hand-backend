@@ -28,6 +28,7 @@ const schema = buildSchema(`
     updatedAt: String
     volunteerComplete: Boolean
     helpeeComplete: Boolean
+    distance: Float
   }
 
   input UserInput {

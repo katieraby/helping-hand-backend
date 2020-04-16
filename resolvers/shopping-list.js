@@ -52,7 +52,6 @@ const shoppingListResolvers = {
               helpee: helpee,
               // helpee: helpee.bind(this, shoppingList.helpee),
             };
-            console.log(changedShoppingList);
             return changedShoppingList;
           });
       } else {
@@ -62,7 +61,7 @@ const shoppingListResolvers = {
   },
   filterByDistance: ({ target }) => {
     volunteer = User.findById(target);
-    lists = ShoppingList.find().populate('helpee');
+    lists = ShoppingList.find({ orderStatus: 'pending' }).populate('helpee');
     return Promise.all([volunteer, lists]).then(([volunteer, lists]) => {
       const formattedLists = [];
       lists.forEach((list) => {
@@ -83,7 +82,6 @@ const shoppingListResolvers = {
           )}&destinations=${urlArr.join('|')}&key=${API_KEY}`
         )
         .then((res) => {
-          // console.log(res.data.rows[0].elements);
           const distances = [];
           res.data.rows[0].elements.forEach((el, i) => {
             const distanceToTarget = Number(el.distance.text.split(' ')[0]);
@@ -101,7 +99,15 @@ const shoppingListResolvers = {
           })
             .populate('helpee')
             .then((res) => {
-              return res;
+              const output = [];
+              res.forEach((list, i) => {
+                const listOutput = {
+                  ...list._doc,
+                  distance: listsWithinDistance[i].distance,
+                };
+                output.push(listOutput);
+              });
+              return output;
             });
         });
     });
@@ -117,9 +123,7 @@ const shoppingListResolvers = {
       if (res === null) {
         throw new Error('Shopping list not found, check shopping list ID');
       } else {
-        console.log(`Shopping List ID: ${listId}`);
         if (volunteerId) {
-          console.log(`Volunteer ID: ${volunteerId}`);
           if (!res.volunteer && res.orderStatus === 'pending') {
             return User.findById(volunteerId).then((volunteer) => {
               res.orderStatus = 'accepted';
@@ -148,7 +152,6 @@ const shoppingListResolvers = {
               .populate('helpee')
               .populate('volunteer')
               .then((result) => {
-                console.log(result.orderStatus);
                 return result;
               });
           });
@@ -162,8 +165,6 @@ const shoppingListResolvers = {
               .populate('helpee')
               .populate('volunteer')
               .then((result) => {
-                console.log(result.orderStatus);
-                console.log(result.helpeeComplete);
                 return result;
               });
           });
