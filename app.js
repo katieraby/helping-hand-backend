@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const graphqlHTTP = require('express-graphql');
 const bodyParser = require('body-parser');
 let mongoUsername, mongoPassword;
@@ -33,6 +34,7 @@ mongoose.connection.once('open', () => {
 });
 
 app.use(bodyParser.json());
+app.use(cors());
 app.use(
   '/graphql',
   graphqlHTTP({
