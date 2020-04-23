@@ -1,6 +1,6 @@
-# Helping Hand backend readme
+# Helping Hand Back-End
 
-## Queries
+## Overview of GraphQL Queries
 
 ### Users
 
@@ -36,13 +36,14 @@ Returns single shopping list object that matches given ID with properties specif
 login(email: "email" password: "password"){return properties}
 ```
 
-Performs login operation with given email and password combo. Checks that email and password combination are a match. Returns user object with properties specified in {return properties} if it's a match, returns an error if not.
+Performs login operation with given email and password combo. Checks that email and password combination are a match. Returns user object with properties specified in {return properties} if it's a match. Returns an error if not.
 
 ```
 filterByDistance(target: "volunteer ID"){return properties}
 ```
 
-Filters all shopping lists in the database by the distanceToTravel property of the user with given ID. Returns an array of all shopping list objects whose distance from the users location is less than their distanceToTravel property. Returns properties specified in {return properties}.
+Filters all shopping lists in the database by the distanceToTravel property of the user with given ID. 
+Returns an array of all shopping list objects whose distance from the users location is less than their distanceToTravel property. Returns properties specified in {return properties}.
 
 ## Mutations
 
